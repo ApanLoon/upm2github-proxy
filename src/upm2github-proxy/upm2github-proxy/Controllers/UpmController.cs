@@ -7,7 +7,6 @@ using upm2github_proxy.Services;
 namespace upm2github_proxy.Controllers
 {
     [ApiController]
-    [Route("-/v1")]
     public class UpmController : ControllerBase
     {
         private readonly IRegistryService _registryService;
@@ -25,8 +24,9 @@ namespace upm2github_proxy.Controllers
         /// <param name="maintenance">How much of an effect should maintenance have on search results</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("search")]
+        [Route("{scope}/-/v1/search")]
         public SearchResult Search (
+                                       string scope       = "",
             [FromQuery]                string text        = "*",
             [FromQuery][Range(0, 250)] int    size        = 20,
             [FromQuery]                int    from        = 0,
@@ -34,7 +34,7 @@ namespace upm2github_proxy.Controllers
             [FromQuery][Range(0f, 1f)] float  popularity  = 0f,
             [FromQuery][Range(0f, 1f)] float  maintenance = 0f)
         {
-            return _registryService.Search(text, size, from, quality, popularity, maintenance);
+            return _registryService.Search(scope, text, size, from, quality, popularity, maintenance);
         }
     }
 }
