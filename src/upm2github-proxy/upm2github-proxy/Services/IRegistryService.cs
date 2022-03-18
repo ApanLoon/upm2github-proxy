@@ -13,4 +13,6 @@ public interface IRegistryService
         [Range(0f, 1f)] float  quality     = 1f,
         [Range(0f, 1f)] float  popularity  = 0f,
         [Range(0f, 1f)] float  maintenance = 0f);
+
+    PackageHistory History (string name, string scope = "");
 }

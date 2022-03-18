@@ -26,8 +26,8 @@ namespace upm2github_proxy.Controllers
         [HttpGet]
         [Route("{scope}/-/v1/search")]
         public SearchResult Search (
-                                       string scope       = "",
-            [FromQuery]                string text        = "*",
+                                       string scope       = "@ApanLoon",
+            [FromQuery]                string text        = "com.apanloon",
             [FromQuery][Range(0, 250)] int    size        = 20,
             [FromQuery]                int    from        = 0,
             [FromQuery][Range(0f, 1f)] float  quality     = 1f,
@@ -35,6 +35,13 @@ namespace upm2github_proxy.Controllers
             [FromQuery][Range(0f, 1f)] float  maintenance = 0f)
         {
             return _registryService.Search(scope, text, size, from, quality, popularity, maintenance);
+        }
+
+        [HttpGet]
+        [Route("{scope}/{name}")]
+        public PackageHistory PackageHistory(string scope = "@ApanLoon", string name = "com.apanloon.test-package")
+        {
+            return _registryService.History(name, scope);
         }
     }
 }
