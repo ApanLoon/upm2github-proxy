@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace upm2github_proxy.Models
+namespace upm2github_proxy.Models.Upm
 {
     public class Package
     {
@@ -17,9 +17,9 @@ namespace upm2github_proxy.Models
         public string? ReadmeFilename { get; set; }
         public string? Homepage { get; set; }
         public List<string>? Keywords { get; set; }
-        public Contact? Bugs { get; set; }
+        public Bugs? Bugs { get; set; }
         public string? License { get; set; }
-        public TimeInfo? Time { get; set; }
+        public Dictionary<string, DateTimeOffset>? Time { get; set; }
         public Dictionary<string, string>? Versions { get; set; }
     }
 }

@@ -1,11 +1,18 @@
+using upm2github_proxy;
 using upm2github_proxy.Json;
 using upm2github_proxy.Services;
+using System.Text.Json;
+using upm2github_proxy.Authentication;
+using upm2github_proxy.Services.GitHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Services.AddSingleton<IRegistryService, NpmRegistryService>();
-builder.Services.AddSingleton<IRegistryService, MockRegistryService>();
+
+builder.Services.AddSingleton<IAuthDictionary>(JsonSerializer.Deserialize<AuthDictionary>(File.ReadAllText("authdata.json")) ?? new AuthDictionary());
+
+//builder.Services.AddSingleton<IRegistryService, MockRegistryService>();
+builder.Services.AddSingleton<IRegistryService, GitHubRegistryService>();
 
 builder.Services.AddControllers().AddJsonOptions(ApplicationJsonOptions.AddOptions);
 
@@ -18,6 +25,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseStaticFiles();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

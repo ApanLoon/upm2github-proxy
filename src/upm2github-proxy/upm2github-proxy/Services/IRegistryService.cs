@@ -1,18 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using upm2github_proxy.Models;
+using upm2github_proxy.Models.Upm;
 
 namespace upm2github_proxy.Services;
 
 public interface IRegistryService
 {
-    public SearchResult Search (
-                        string scope       = "",
-                        string text        = "",
-        [Range(0, 250)] int    size        = 20,
-                        int    from        = 0,
-        [Range(0f, 1f)] float  quality     = 1f,
-        [Range(0f, 1f)] float  popularity  = 0f,
-        [Range(0f, 1f)] float  maintenance = 0f);
+    public Task<SearchResult> Search(string scope = "",
+        string text = "",
+        [Range(0, 250)] int size = 20,
+        int @from = 0,
+        [Range(0f, 1f)] float quality = 1F,
+        [Range(0f, 1f)] float popularity = 0F,
+        [Range(0f, 1f)] float maintenance = 0F,
+        string username = "");
 
     PackageHistory History (string name, string scope = "");
 }

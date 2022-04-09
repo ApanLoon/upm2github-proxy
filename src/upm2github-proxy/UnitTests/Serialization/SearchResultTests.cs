@@ -4,6 +4,7 @@ using System.Text.Json;
 using NUnit.Framework;
 using upm2github_proxy.Json;
 using upm2github_proxy.Models;
+using upm2github_proxy.Models.Upm;
 
 namespace UnitTests.Serialization
 {
@@ -50,13 +51,13 @@ namespace UnitTests.Serialization
                             "package",
                             "upm"
                         },
-                        Bugs = new Contact
+                        Bugs = new Bugs
                         {
                             Url = "https://github.com/acoppes/upmgitpusher/issues"
                         },
-                        Time = new TimeInfo
+                        Time = new Dictionary<string, DateTimeOffset>
                         {
-                            Modified = DateTimeOffset.Parse("2020-04-26T04:13:39.253Z")
+                            {"modified", DateTimeOffset.Parse("2020-04-26T04:13:39.253Z")}
                         },
                         Versions = new Dictionary<string, string>
                         {

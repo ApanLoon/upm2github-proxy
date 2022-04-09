@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Json;
 using upm2github_proxy.Json;
 using upm2github_proxy.Models;
+using upm2github_proxy.Models.Upm;
 
 namespace upm2github_proxy.Services;
 
@@ -107,14 +108,14 @@ public class MockRegistryService : IRegistryService
     ""_attachments"": {}
 }";
 
-    public SearchResult Search (
-                        string scope       = "",
-                        string text        = "",
-        [Range(0, 250)] int    size        = 20,
-                        int    from        = 0,
-        [Range(0f, 1f)] float  quality     = 1f,
-        [Range(0f, 1f)] float  popularity  = 0f,
-        [Range(0f, 1f)] float  maintenance = 0f)
+    public Task<SearchResult> Search(string scope = "",
+        string text = "",
+        [Range(0, 250)] int size = 20,
+        int @from = 0,
+        [Range(0f, 1f)] float quality = 1F,
+        [Range(0f, 1f)] float popularity = 0F,
+        [Range(0f, 1f)] float maintenance = 0F,
+        string username = "")
     {
         var result = JsonSerializer.Deserialize<SearchResult>(_searchResult, ApplicationJsonOptions.SerializerOptions)
                      ?? throw new HttpRequestException("Error searching for packages", null, HttpStatusCode.InternalServerError);
@@ -135,7 +136,7 @@ public class MockRegistryService : IRegistryService
             Objects = result.Objects.Take(new Range(from, size)).ToList(),
             Time = DateTimeOffset.Now
         };
-        return result;
+        return Task.FromResult(result);
     }
 
     public PackageHistory History (string name, string scope = "")

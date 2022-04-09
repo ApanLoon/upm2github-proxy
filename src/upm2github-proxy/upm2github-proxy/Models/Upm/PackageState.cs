@@ -1,4 +1,4 @@
-﻿namespace upm2github_proxy.Models;
+﻿namespace upm2github_proxy.Models.Upm;
 
 public enum PackageState
 {

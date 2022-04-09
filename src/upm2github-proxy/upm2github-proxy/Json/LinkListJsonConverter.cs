@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using upm2github_proxy.Models;
+using upm2github_proxy.Models.Upm;
 
 namespace upm2github_proxy.Json;
 

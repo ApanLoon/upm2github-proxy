@@ -4,6 +4,7 @@ using System.Text.Json;
 using NUnit.Framework;
 using upm2github_proxy.Json;
 using upm2github_proxy.Models;
+using upm2github_proxy.Models.Upm;
 
 namespace UnitTests.Serialization;
 
@@ -47,13 +48,13 @@ public class PackageTests
                     "package",
                     "upm"
                 },
-                Bugs = new Contact
+                Bugs = new Bugs
                 {
                     Url = "https://github.com/acoppes/upmgitpusher/issues"
                 },
-                Time = new TimeInfo
+                Time = new Dictionary<string, DateTimeOffset>
                 {
-                    Modified = DateTimeOffset.Parse("2020-04-26T04:13:39.253Z")
+                    {"modified", DateTimeOffset.Parse("2020-04-26T04:13:39.253Z")}
                 },
                 Versions = new Dictionary<string, string>
                 {
@@ -83,9 +84,9 @@ public class PackageTests
                     "c#",
                     "template"
                 },
-                Time = new TimeInfo
+                Time = new Dictionary<string, DateTimeOffset>
                 {
-                    Modified = DateTimeOffset.Parse("2021-05-03T08:11:07.176Z")
+                    {"modified", DateTimeOffset.Parse("2021-05-03T08:11:07.176Z")}
                 },
                 Versions = new Dictionary<string, string>
                 {
@@ -115,9 +116,9 @@ public class PackageTests
                     Url = "https://github.com/andrew-raphael-lukasik"
                 },
                 ReadmeFilename = "",
-                Time = new TimeInfo
+                Time = new Dictionary<string, DateTimeOffset>
                 {
-                    Modified = DateTimeOffset.Parse("2020-11-05T18:51:58.362Z")
+                    {"modified", DateTimeOffset.Parse("2020-11-05T18:51:58.362Z")}
                 },
                 Versions = new Dictionary<string, string>
                 {

@@ -1,7 +1,6 @@
-﻿using System.Security;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace upm2github_proxy.Models;
+namespace upm2github_proxy.Models.Upm;
 
 public class PackageVersion
 {
