@@ -2,7 +2,6 @@
 using System.Net;
 using System.Text.Json;
 using upm2github_proxy.Json;
-using upm2github_proxy.Models;
 using upm2github_proxy.Models.Upm;
 
 namespace upm2github_proxy.Services;
@@ -144,5 +143,10 @@ public class MockRegistryService : IRegistryService
         var result = JsonSerializer.Deserialize<PackageHistory>(_packageHistory, ApplicationJsonOptions.SerializerOptions)
                      ?? throw new HttpRequestException("Error loading package history", null, HttpStatusCode.InternalServerError);
         return Task.FromResult(result);
+    }
+
+    public Task<HttpResponseMessage> Download(string package, string username)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace upm2github_proxy.Models.Npm;
 
@@ -19,9 +22,11 @@ public class Dist
 
     public Dictionary<string, string> AsUpm()
     {
+        var match = Regex.Match(Tarball, "^https?://[^/]+/download/@([^/]+)/(.+)$");
+        var tarball = $"http://localhost:5080/user/{match.Groups[1].Value}/download/{HttpUtility.UrlEncode(match.Groups[2].Value, Encoding.ASCII)}"; // TODO: Get method, host and port from somewhere
         var result = new Dictionary<string, string>
         {
-            {"tarball", Tarball}, // TODO: We need to proxy this URL so that we can add credentials when installing
+            {"tarball", tarball},
             {"shasum", ShaSum}
         };
         if (Integrity != null) result.Add("integrity", Integrity);

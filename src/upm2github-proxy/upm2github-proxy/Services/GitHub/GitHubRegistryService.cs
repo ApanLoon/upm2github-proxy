@@ -94,4 +94,13 @@ class GitHubRegistryService : IRegistryService
         var packageMetadata = JsonSerializer.Deserialize<PackageMetadata>(body) ?? new PackageMetadata();
         return packageMetadata.AsUpmPackageHistory();
     }
+
+    public async Task<HttpResponseMessage> Download(string package, string username)
+    {
+        var token = _authDictionary.GetToken(username);
+        var authHeader = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{token}")));
+        _npmHttpClient.DefaultRequestHeaders.Authorization = authHeader;
+        var result = await _npmHttpClient.GetAsync($"https://npm.pkg.github.com/download/@{username}/{package}");
+        return result;
+    }
 }
