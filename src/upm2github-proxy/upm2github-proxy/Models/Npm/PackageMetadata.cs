@@ -6,10 +6,10 @@ namespace upm2github_proxy.Models.Npm
 {
     public class PackageMetadata
     {
-        [JsonPropertyName("_id")] public string Id { get; set; } = "";
-        [JsonPropertyName("_rev")] public string? Rev { get; set; } = "";
+        [JsonPropertyName("_id")] public string? Id { get; set; }
+        [JsonPropertyName("_rev")] public string? Rev { get; set; }
         [JsonPropertyName("dist-tags")] public Dictionary<string, string>? DistTags { get; set; }
-        [JsonPropertyName("name")] public string Name { get; set; } = "";
+        [JsonPropertyName("name")] public string Name { get; set; } = "default-name";
         [JsonPropertyName("time")] public Dictionary<string, string>? Time { get; set; }
         [JsonPropertyName("users")] public Dictionary<string, string>? Users { get; set; }
         [JsonPropertyName("versions")] public Dictionary<string, PackageVersion>? Versions { get; set; }
@@ -26,12 +26,22 @@ namespace upm2github_proxy.Models.Npm
         [JsonPropertyName("repository")] public Repository? Repository { get; set; }
 
         // TODO: It is possible that this object contains other info from the package.json of the package
-        
+
+        /// <summary>
+        /// Filters out "@username/" from package names TODO: This should be in the GitHub service only.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string NameAsUpm(string name)
+        {
+            return Regex.Replace(name, "^[^/]*/", "");
+        }
+
         /// <summary>
         /// Creates a versions dictionary as used in UPM from this PackageMetadata.
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, string>? VersionsAsUpm()
+        public Dictionary<string, string>? VersionsAsUpmFlippedDist()
         {
             return DistTags?.ToDictionary(distTag => distTag.Value, distTag => distTag.Key);
         }
@@ -52,9 +62,9 @@ namespace upm2github_proxy.Models.Npm
             return Time?.ToDictionary(time => time.Key, time => DateTimeOffset.Parse(time.Value));
         }
 
-        public Package AsUpm()
+        public Package AsUpmPackage()
         {
-            var name = Regex.Replace(Name, "^[^/]*/", "");
+            var name = NameAsUpm(Name);
             return new Package
             {
                 Name           = name,
@@ -62,7 +72,7 @@ namespace upm2github_proxy.Models.Npm
                 Description    = this.Description,
                 DistTags       = this.DistTags,
                 Maintainers    = this.MaintainersAsUpm(),
-                Author         = this.Author?.AsUpm()     ?? this.Versions?.FirstOrDefault().Value?.Author?.AsUpm(),
+                Author         = this.Author?.AsUpm()     ?? this.Versions?.FirstOrDefault().Value.Author?.AsUpm(),
                 Repository     = this.Repository?.AsUpm() ?? this.Versions?.FirstOrDefault().Value.Repository?.AsUpm(),
                 ReadmeFilename = this.ReadmeFilename      ?? this.Versions?.FirstOrDefault().Value.ReadmeFilename ?? "",
                 Homepage       = this.Homepage            ?? this.Versions?.FirstOrDefault().Value.Homepage,
@@ -70,8 +80,30 @@ namespace upm2github_proxy.Models.Npm
                 Bugs           = this.BugsAsUpm(),
                 License        = this.License             ?? this.Versions?.FirstOrDefault().Value.License,
                 Time           = this.TimeAsUpm(),
-                Versions       = this.VersionsAsUpm()
+                Versions       = this.VersionsAsUpmFlippedDist()
             };
+        }
+
+        public PackageHistory AsUpmPackageHistory()
+        {
+            var name = NameAsUpm(Name);
+            return new PackageHistory()
+            {
+                Name          = NameAsUpm(Name),
+                Versions      = this.VersionsAsUpm(),
+                Time          = this.TimeAsUpm(),
+                //Users       = ?? // TODO: How to get this?
+                DistTags      = this.DistTags,
+                Rev           = this.Rev,
+                Id            = this.Id     ?? this.Versions?.FirstOrDefault().Value.Id,
+                Readme        = this.Readme ?? this.Versions?.FirstOrDefault().Value.Readme,
+                //Attachments = ?? // TODO: How to get this?
+            };
+        }
+
+        private Dictionary<string, Upm.PackageVersion>? VersionsAsUpm()
+        {
+            return Versions?.ToDictionary(packageVersion => packageVersion.Key, packageVersion => packageVersion.Value.AsUpm());
         }
     }
 }

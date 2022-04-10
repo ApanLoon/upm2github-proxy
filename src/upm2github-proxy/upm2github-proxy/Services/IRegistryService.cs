@@ -15,5 +15,5 @@ public interface IRegistryService
         [Range(0f, 1f)] float maintenance = 0F,
         string username = "");
 
-    PackageHistory History (string name, string scope = "");
+    public Task<PackageHistory> History(string name, string username = "");
 }

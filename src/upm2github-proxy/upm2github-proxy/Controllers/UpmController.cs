@@ -32,7 +32,7 @@ namespace upm2github_proxy.Controllers
         [Route("user/{username}/-/v1/search")]
         public async Task<SearchResult> Search (
                                        string username    = "",
-            [FromQuery]                string text        = "com.apanloon",
+            [FromQuery]                string text        = "",
             [FromQuery][Range(0, 250)] int    size        = 20,
             [FromQuery]                int    from        = 0,
             [FromQuery][Range(0f, 1f)] float  quality     = 1f,
@@ -44,11 +44,11 @@ namespace upm2github_proxy.Controllers
         }
 
         [HttpGet]
-        [Route("{scope}/{name}")]
-        public PackageHistory PackageHistory(string scope = "@ApanLoon", string name = "com.apanloon.test-package")
+        [Route("user/{username}/{packageName}")]
+        public async Task<PackageHistory> PackageHistory(string username, string packageName)
         {
-            _logger.LogDebug("GET {scope}/{name}", scope, name);
-            return _registryService.History(name, scope);
+            _logger.LogDebug("GET user/{username}/{name}", username, packageName);
+            return await _registryService.History(packageName, username);
         }
     }
 }

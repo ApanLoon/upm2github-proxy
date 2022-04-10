@@ -139,10 +139,10 @@ public class MockRegistryService : IRegistryService
         return Task.FromResult(result);
     }
 
-    public PackageHistory History (string name, string scope = "")
+    public Task<PackageHistory> History(string name, string scope = "")
     {
         var result = JsonSerializer.Deserialize<PackageHistory>(_packageHistory, ApplicationJsonOptions.SerializerOptions)
                      ?? throw new HttpRequestException("Error loading package history", null, HttpStatusCode.InternalServerError);
-        return result;
+        return Task.FromResult(result);
     }
 }

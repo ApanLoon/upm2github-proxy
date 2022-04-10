@@ -12,7 +12,7 @@ class GitHubRegistryService : IRegistryService
 {
     private readonly IAuthDictionary _authDictionary;
     private readonly HttpClient _gitHubHttpClient;
-    private readonly HttpClient _npmClient;
+    private readonly HttpClient _npmHttpClient;
 
     public GitHubRegistryService(IAuthDictionary authDictionary)
     {
@@ -28,7 +28,7 @@ class GitHubRegistryService : IRegistryService
         _gitHubHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
 
         
-        _npmClient = new HttpClient();
+        _npmHttpClient = new HttpClient();
 
         _gitHubHttpClient.DefaultRequestHeaders.UserAgent.Clear();
         _gitHubHttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("upm2github-proxy", "1.0"));
@@ -46,7 +46,7 @@ class GitHubRegistryService : IRegistryService
     {
         var token = _authDictionary.GetToken(username);
         var authHeader = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{token}")));
-
+        
         _gitHubHttpClient.DefaultRequestHeaders.Authorization = authHeader;
         var body = await _gitHubHttpClient.GetStringAsync($"https://api.github.com/users/{username}/packages?package_type=npm");
 
@@ -57,16 +57,16 @@ class GitHubRegistryService : IRegistryService
             return result;
         }
 
-        _npmClient.DefaultRequestHeaders.Authorization = authHeader;
+        _npmHttpClient.DefaultRequestHeaders.Authorization = authHeader;
         foreach (var packageListItem in packageList)
         {
-            body = await _npmClient.GetStringAsync($"https://npm.pkg.github.com/@{username}/{packageListItem.Name}");
+            body = await _npmHttpClient.GetStringAsync($"https://npm.pkg.github.com/@{username}/{packageListItem.Name}");
             var packageInfo = JsonSerializer.Deserialize<PackageMetadata> (body) ?? new PackageMetadata();
             var searchResultEntry = new SearchResultEntry()
             {
-                Package = packageInfo.AsUpm(),
+                Package = packageInfo.AsUpmPackage(),
                 Flags = new Dictionary<string, bool>{{"unstable", false}},
-                Local = false,
+                Local = true,
                 Score = new Score()
                 {
                     Final = 1,
@@ -85,9 +85,13 @@ class GitHubRegistryService : IRegistryService
         return result;
     }
 
-    public PackageHistory History(string name, string scope = "")
+    public async Task<PackageHistory> History(string name, string username = "")
     {
-        var result = new PackageHistory();
-        return result;
+        var token = _authDictionary.GetToken(username);
+        var authHeader = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{token}")));
+        _npmHttpClient.DefaultRequestHeaders.Authorization = authHeader;
+        var body = await _npmHttpClient.GetStringAsync($"https://npm.pkg.github.com/@{username}/{name}");
+        var packageMetadata = JsonSerializer.Deserialize<PackageMetadata>(body) ?? new PackageMetadata();
+        return packageMetadata.AsUpmPackageHistory();
     }
 }
