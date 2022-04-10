@@ -1,9 +1,9 @@
 # upm2github-proxy
-Proxy between Unity Package Manager and GitHub Packages
+Proxy between Unity Package Manager (upm) and GitHub Packages
 
 There are several issues with trying to make Unity understand packages hosted on npm.pkg.github.com:
 1. The github package repository does not implement the standard /-v1/search api
-2. The Unity Package Manager (UPM) does not accept github scoping, i.e. the "@user/" or "@organization/" prefix in package names
+2. The Unity Package Manager does not accept github scoping, i.e. the "@user/" or "@organization/" prefix in package names
 3. The Unity Package Manager doesn't, as far as I know, handle authentication in a way that works with github
 
 upm2github-proxy attempts to alleviate these issues.
