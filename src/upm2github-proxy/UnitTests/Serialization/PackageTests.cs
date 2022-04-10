@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 using NUnit.Framework;
 using upm2github_proxy.Json;
-using upm2github_proxy.Models;
 using upm2github_proxy.Models.Upm;
 
 namespace UnitTests.Serialization;

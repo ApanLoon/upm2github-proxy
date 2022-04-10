@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using upm2github_proxy.Models.Upm;
 
 namespace upm2github_proxy.Models.Npm;

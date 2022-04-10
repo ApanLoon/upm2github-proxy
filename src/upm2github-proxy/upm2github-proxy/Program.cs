@@ -1,4 +1,3 @@
-using upm2github_proxy;
 using upm2github_proxy.Json;
 using upm2github_proxy.Services;
 using System.Text.Json;
